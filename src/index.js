@@ -313,18 +313,27 @@ class App extends React.Component {
     );
     const newData = this.state.data;
     newData.projects[index] = newProp;
+    console.log(newData);
     this.setState({ data: newData });
   };
   render() {
     const { data } = this.state;
+    const projectStyle = {
+      display: "flex",
+      flexDirection: "row"
+    };
     return (
       <div style={styles}>
         {data.projects.map(i => {
           return (
-            <div key={i.PurchaseOrderNumber}>
-              <th>PurchaseOrderNumber</th>
-              <th>CustomerNumber</th>
-              <ProjectRow {...i} changeFunc={props => this.changeFunc(props)} />
+            <div style={projectStyle} key={i.PurchaseOrderNumber}>
+              <div>PurchaseOrderNumber</div>
+              <div>CustomerNumber</div>
+              <ProjectRow
+                {...i}
+                divStyles={projectStyle}
+                changeFunc={props => this.changeFunc(props)}
+              />
             </div>
           );
         })}
@@ -336,11 +345,11 @@ class App extends React.Component {
 const ProjectRow = props => {
   return (
     <div>
-      <tr>
-        <td>
+      <div style={props.divStyles}>
+        <div>
           <button onClick={() => props.changeFunc(props)} />
-        </td>
-        <td
+        </div>
+        <div
           style={
             props.checked
               ? { backgroundColor: "yellow" }
@@ -348,19 +357,26 @@ const ProjectRow = props => {
           }
         >
           {props.PurchaseOrderNumber}
-        </td>
-        <td>{props.CustomerNumber}</td>
-      </tr>
-      <tr>
-        <th>SalesOrder</th>
-        <th>OrderStatus</th>
-      </tr>
-      <tr>{props.Orders.map(i => <OrderRow {...i} />)}</tr>
+        </div>
+        <div>{props.CustomerNumber}</div>
+      </div>
+      <div style={props.divStyles}>
+        <div>SalesOrder</div>
+        <div>OrderStatus</div>
+      </div>
+      <div>
+        {props.Orders.map(i => {
+          i["key"] = `${props.PurchaseOrderNumber}_${i.SalesOrder}`;
+          //const d = { ...i, k };
+          return <OrderRow key={i.key} {...i} />;
+        })};
+      </div>
     </div>
   );
 };
 
 const OrderRow = props => {
+  console.log(props);
   return (
     <div>
       <tr>
